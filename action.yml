@@ -1,0 +1,10 @@
+name: npm publish
+author: Shawn Allen
+description: Publish to npm or the GitHub Package registry on every push, with sensible versioning conventions.
+branding:
+  icon: package
+  color: blue
+
+runs:
+  using: docker
+  image: Dockerfile
