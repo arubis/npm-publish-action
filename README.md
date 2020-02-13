@@ -1,13 +1,14 @@
-# primer/publish
+# npm-publish-action
 
 This [GitHub Action][github actions] publishes to npm with the following conventions:
 
-1. If we're on the `master` branch, the `version` field is used as-is and we just run `npm publish --access public`.
-   - After publishing a new version on the `master` branch, we tag the commit SHA with `v{version}` via the GitHub API.
-   - If the version in `package.json` is already published, we exit with a `0` code. Previously, we exited with a `78` code, which was Actions v1-speak for "neutral", but this has been [removed from Actions v2](https://twitter.com/ethomson/status/1163899559279497217?s=20).
-1. If we're on a `release-<version>` branch, we publish a release candidate to the `next` npm dist-tag with the version in the form: `<version>-rc.<sha>`.
-   - A [status check][status checks] is created with the context `npm version` noting whether the `version` field in `package.json` matches the `<version>` portion of the branch. If it doesn't, the check's status is marked as pending.
-1. Otherwise, we publish a "canary" release, which has a version in the form: `0.0.0-<sha>`.
+| branch | version | tag |
+| :----- | :------ | :-- |
+| `master` | from `package.json` | `latest` |
+| `release-<version>` | `<version>-rc.<sha>` | `next` |
+| all others | `0.0.0-<sha>` | `canary` |
+
+...where `<sha>` is the 7-character SHA of the head commit ref.
 
 ## Status checks
 
@@ -21,87 +22,26 @@ If you're on a release branch (`release-<version>`) and the `<version>` portion 
 
 ## Usage
 
-**You will need to provide an npm access token with publish permissions via the `NPM_AUTH_TOKEN` secret in the Actions visual editor** if you haven't already. The `GITHUB_TOKEN` secret is also required to create tags after releasing on the master branch.
+1. Add an [actions/setup-node] step to your workflow. If you have one already, ensure that the `registry-url` input is set (e.g. to `https://registry.npmjs.org`) so that this action can populate your `.npmrc` with authentication info:
 
-We suggest that you place this action after any linting and/or testing actions to catch as many errors as possible before publishing.
+   ```yaml
+   - uses: actions/setup-node@master
+     with:
+       version: 12
+       registry-url: 'https://registry.npmjs.org'
+   ```
 
+2. Add this action later in your workflow. I suggest that you place this action after any linting and/or testing actions to catch as many errors as possible before publishing.
 
-### Actions v2
-To use this in an [Actions v2](https://help.github.com/en/articles/migrating-github-actions-from-hcl-syntax-to-yaml-syntax) workflow, add the following YAML to one or more of your steps:
+   ```yaml
+   - uses: shawnbot/npm-publish-action@master
+     env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       # NOTE: use the NODE_ prefix instead of NPM_ here!
+       NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+   ```
 
-```yaml
-- uses: primer/publish@master
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-```
-
-You can pass additional [options](#options) via the `args` key:
-
-```diff
-​- uses: primer/publish@master
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-+   args: '--dry-run -- --unsafe-perm'
-```
-
-### Actions v1
-To use this in an Actions v1 workflow, add the following snippet to `.github/main.workflow`:
-
-```hcl
-action "publish" {
-  uses = "primer/publish@master"
-  secrets = [
-    "GITHUB_TOKEN",
-    "NPM_AUTH_TOKEN",
-  ]
-}
-```
-
-## Options
-
-### `--dry-run`
-
-Default: `false`
-
-Does everything publish would do except actually publishing to the registry. Reports the details of what would have been published.
-
-#### Example
-
-```hcl
-action "publish" {
-  uses = "primer/publish@master"
-  secrets = ["GITHUB_TOKEN", "NPM_AUTH_TOKEN"]
-  args = "--dry-run"
-}
-```
-
-### `--dir=<path>`
-
-Default: `.`
-
-Accepts a path to the directory that contains the `package.json` to publish.
-
-#### Example
-
-```hcl
-action "publish" {
-  uses = "primer/publish@master"
-  secrets = ["GITHUB_TOKEN", "NPM_AUTH_TOKEN"]
-  args = "--dir=packages/example"
-}
-```
-
-## npm CLI arguments
-
-It's possible to pass additional arguments to `npm` via the `args` field in your workflow action. Because the `primer-publish` CLI accepts options of its own (such as `--dry-run`), you need to prefix any `npm` arguments with `--`:
-
-```diff
-action "publish" {
-  uses = "primer/publish@master"
-+  args = ["--", "--registry=https://registry.your.org"]
-```
+That's it!
 
 [github actions]: https://github.com/features/actions
 [commit status]: https://developer.github.com/v3/repos/statuses/
