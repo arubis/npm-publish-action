@@ -8,13 +8,13 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 10
 
       - run: npm ci
       - run: npm test
       - run: gulp build
 
-      - uses: .
+      - run: entrypoint.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
