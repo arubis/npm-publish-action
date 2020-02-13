@@ -12,7 +12,6 @@ jobs:
 
       - run: npm ci
       - run: npm test
-      - run: gulp build
 
       - run: entrypoint.sh
         env:
