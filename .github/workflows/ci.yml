@@ -4,9 +4,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
@@ -15,8 +12,8 @@ jobs:
 
       - run: npm ci
       - run: npm test
-        env:
-            GITHUB_TOKEN: ''
-            NPM_AUTH_TOKEN: ''
 
       - run: bash entrypoint.sh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
