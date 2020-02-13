@@ -16,4 +16,4 @@ jobs:
       - run: bash entrypoint.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
