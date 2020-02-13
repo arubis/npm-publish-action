@@ -5,10 +5,6 @@ const getContext = require('./context')
 const runDry = require('./run-dry')
 
 module.exports = function publish(options = {dir: '.'}, npmArgs = []) {
-  if (!process.env.NPM_AUTH_TOKEN) {
-    throw new Error(`You must set the NPM_AUTH_TOKEN environment variable`)
-  }
-
   const run = options.dryRun ? runDry : require('execa')
   const execOpts = {stdio: 'inherit'}
 

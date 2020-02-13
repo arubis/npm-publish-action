@@ -2,7 +2,7 @@ const path = require('path')
 const meta = require('github-action-meta')
 const readJSON = require('./read-json')
 
-const CONFIG_KEY = '@primer/publish'
+const CONFIG_KEY = require('../package.json').name
 
 const RELEASE_BRANCH_PATTERN = /^release-(.+)$/
 const RELEASE_CANDIDATE_PREID = 'rc'
