@@ -13,7 +13,7 @@ jobs:
       - run: npm ci
       - run: npm test
 
-      - run: entrypoint.sh
+      - run: bash entrypoint.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
