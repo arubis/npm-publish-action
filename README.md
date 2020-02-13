@@ -22,7 +22,7 @@ If you're on a release branch (`release-<version>`) and the `<version>` portion 
 
 ## Usage
 
-1. Add an [actions/setup-node] step to your workflow. If you have one already, ensure that the `registry-url` input is set (e.g. to `https://registry.npmjs.org`) so that this action can populate your `.npmrc` with authentication info:
+1. Add an [actions/setup-node](https://github.com/actions/setup-node) step to your workflow. If you have one already, ensure that the `registry-url` input is set (e.g. to `https://registry.npmjs.org`) so that this action can populate your `.npmrc` with authentication info:
 
    ```yaml
    - uses: actions/setup-node@master
