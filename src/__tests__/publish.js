@@ -26,21 +26,10 @@ describe('publish()', () => {
     readJSON.mockClear()
   })
 
-  it('throws if NPM_AUTH_TOKEN is falsy', () => {
-    mockFiles({
-      'package.json': {name: 'pkg', version: '1.0.0'}
-    })
-    mockEnv({NPM_AUTH_TOKEN: undefined})
-    expect(() => publish()).toThrow()
-    mockEnv({NPM_AUTH_TOKEN: ''})
-    expect(() => publish()).toThrow()
-  })
-
   it('does the right things on a feature branch', () => {
     mockEnv({
       GITHUB_REF: 'refs/heads/feature-x',
-      GITHUB_SHA: 'deadfad',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'deadfad'
     })
     mockFiles({
       'package.json': {name: 'pkg', version: '1.0.0'}
@@ -66,8 +55,7 @@ describe('publish()', () => {
   it('does the right things on a release branch', () => {
     mockEnv({
       GITHUB_REF: 'refs/heads/release-2.0.0',
-      GITHUB_SHA: 'deadfad',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'deadfad'
     })
     mockFiles({
       'package.json': {name: 'pkg', version: '1.0.0'}
@@ -89,8 +77,7 @@ describe('publish()', () => {
     const version = '1.1.0'
     mockEnv({
       GITHUB_REF: 'refs/heads/master',
-      GITHUB_SHA: 'deadfad',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'deadfad'
     })
     mockFiles({
       'package.json': {name: 'pkg', version}
@@ -112,8 +99,7 @@ describe('publish()', () => {
   it('respects the "dryRun" option', () => {
     mockEnv({
       GITHUB_REF: 'refs/heads/run-dry',
-      GITHUB_SHA: 'bedface',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'bedface'
     })
     mockFiles({
       'package.json': {name: 'pkg', version: '1.0.0'}
@@ -127,8 +113,7 @@ describe('publish()', () => {
     const version = '1.1.0'
     mockEnv({
       GITHUB_REF: 'refs/heads/master',
-      GITHUB_SHA: 'deadfad',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'deadfad'
     })
     mockFiles({
       'foo/bar/package.json': {name: 'pkg', version}
@@ -148,8 +133,7 @@ describe('publish()', () => {
   it('respects "dir" option on a release branch', () => {
     mockEnv({
       GITHUB_REF: 'refs/heads/release-2.0.0',
-      GITHUB_SHA: 'deadfad',
-      NPM_AUTH_TOKEN: 'secret'
+      GITHUB_SHA: 'deadfad'
     })
     mockFiles({
       'foo/bar/package.json': {name: 'pkg', version: '1.0.0'}
