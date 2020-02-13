@@ -11,7 +11,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         with:
           node-version: 10
-          registry-url: '//registry.npmjs.org'
+          registry-url: 'https://registry.npmjs.org'
 
       - run: npm ci
       - run: npm test
