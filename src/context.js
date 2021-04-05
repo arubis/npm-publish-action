@@ -24,7 +24,7 @@ function updateConfig(config, registry ) {
                        !(line.startsWith("registry=") || line-includes("_authToken="))
                        );
   
-  // append new retistry, token to EFO
+  // append new registry, token to EOF
   lines.push(`${authDomain}/:_authToken=\${INPUT_TOKEN}`);
   lines.push(`registry=${registryURL.href}`);
   
@@ -49,8 +49,9 @@ module.exports = function getContext({dir = '.'} = {}) {
   }
   
   // overwrite NPM config for registry and token
-  const configFilePath = "~/work/_temp/.npmrc";
+  const configFilePath = "/home/runner/work/_temp/.npmrc";
   let configFile = fs.readFile(configFilePath, "utf-8");
+  if (!configFile) { throw new Error(`Unable to read .npmrc at specified location.`); }
   let newConfig = updateConfig(config, process.env.GITHUB_TOKEN);
   fs.writeFile(configFilePath, newConfig);
 
