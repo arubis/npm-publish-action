@@ -49,10 +49,10 @@ module.exports = function getContext({dir = '.'} = {}) {
   
   // overwrite NPM config for registry and token
   const configFilePath = "/home/runner/work/_temp/.npmrc";
-  let configFile = fs.readFile(configFilePath, "utf-8");
+  let configFile = fs.readFileSync(configFilePath, "utf-8");
   if (!configFile) { throw new Error(`Unable to read .npmrc at specified location.`); }
   let newConfig = updateConfig(config, process.env.GITHUB_TOKEN);
-  fs.writeFile(configFilePath, newConfig);
+  fs.writeFileSync(configFilePath, newConfig);
 
   const config = packageJson[CONFIG_KEY] || {}
   const {releaseBranch = 'master', releaseTag = 'latest'} = config
