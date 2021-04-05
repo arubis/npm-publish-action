@@ -1,6 +1,7 @@
 const path = require('path')
 const meta = require('github-action-meta')
 const readJSON = require('./read-json')
+const fs = require('fs')
 
 const CONFIG_KEY = require('../package.json').name
 
