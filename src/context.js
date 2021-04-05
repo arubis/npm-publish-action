@@ -1,4 +1,4 @@
-import { URL } from "url"
+import URL
 
 const path = require('path')
 const meta = require('github-action-meta')
