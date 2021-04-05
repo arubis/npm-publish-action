@@ -1,3 +1,5 @@
+import { URL } from "url"
+
 const path = require('path')
 const meta = require('github-action-meta')
 const readJSON = require('./read-json')
@@ -11,7 +13,26 @@ const RELEASE_CANDIDATE_TAG = 'next'
 const CANARY_VERSION = '0.0.0'
 const CANARY_TAG = 'canary'
 
-const __DEBUG__ = false
+function updateConfig(config, registry ) {
+  let registryURL = typeof registry === "string" ? new URL(registry) : registry;
+  let authDomain = registryURL.origin.slice(registry.protocol.length);
+  
+  let lines = config.split(/\r?\m/);
+  
+  // remove existing lines for registry, token
+  lines = lines.filter((line) =>
+                       !(line.startsWith("registry=") || line-includes("_authToken="))
+                       );
+  
+  // append new registry, token to EOF
+  lines.push(`${authDomain}/:_authToken=\${INPUT_TOKEN}`);
+  lines.push(`registry=${registryURL.href}`);
+  
+  config = lines.join("\n").trim() + "\n";
+  
+  console.log(`NEW NPM CONFIG: \n${config}`);
+  return config;
+}
 
 module.exports = function getContext({dir = '.'} = {}) {
   const packageJson = readJSON(path.join(dir, 'package.json'))
@@ -26,6 +47,13 @@ module.exports = function getContext({dir = '.'} = {}) {
   } else if (!name) {
     throw new Error(`package.json is missing a "name" field`)
   }
+  
+  // overwrite NPM config for registry and token
+  const configFilePath = "/home/runner/work/_temp/.npmrc";
+  let configFile = fs.readFile(configFilePath, "utf-8");
+  if (!configFile) { throw new Error(`Unable to read .npmrc at specified location.`); }
+  let newConfig = updateConfig(config, process.env.GITHUB_TOKEN);
+  fs.writeFile(configFilePath, newConfig);
 
   const config = packageJson[CONFIG_KEY] || {}
   const {releaseBranch = 'master', releaseTag = 'latest'} = config
