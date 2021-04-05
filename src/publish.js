@@ -47,14 +47,14 @@ module.exports = function publish(options = {dir: '.'}, npmArgs = []) {
           description: `npm publish --tag ${tag}`
         })
       )
-      .then(() => run('npm', [...npmArgs, 'publish', options.dir, '--tag', tag, '--access', 'public'], execOpts))
-      .then(() =>
-        publishStatus(context, {
-          state: 'success',
-          description: version,
-          url: `https://unpkg.com/${name}@${version}/`
-        })
-      )
+      // .then(() => run('npm', [...npmArgs, 'publish', options.dir, '--tag', tag, '--access', 'public'], execOpts))
+      // .then(() =>
+      //   publishStatus(context, {
+      //     state: 'success',
+      //     description: version,
+      //     url: `https://unpkg.com/${name}@${version}/`
+      //   })
+      // )
       .then(() => {
         if (isLatest) {
           const {GITHUB_TOKEN} = process.env
