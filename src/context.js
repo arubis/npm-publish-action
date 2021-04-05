@@ -54,7 +54,7 @@ module.exports = function getContext({dir = '.'} = {}) {
     '.npmrc'
   );
   let npmrc = fs.readFileSync(npmrcFilePath, "utf-8");
-  if (!npmrc) { throw new Error(`Unable to read .npmrc at specified location: ${npmrcFilePath)}`); }
+  if (!npmrc) { throw new Error(`Unable to read .npmrc at specified location: ${npmrcFilePath})`); }
   let newNpmRc = updateConfig(npmrc, process.env.GITHUB_TOKEN);
   fs.writeFileSync(configFilePath, newConfig);
 
