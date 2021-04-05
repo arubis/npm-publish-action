@@ -49,7 +49,7 @@ module.exports = function getContext({dir = '.'} = {}) {
   
   // overwrite NPM config for registry and token
   const configFilePath = path.join(dir, ".npmrc");
-  const npmrcFilePath: string = path.resolve(
+  const npmrcFilePath = path.resolve(
     process.env['RUNNER_TEMP'] || process.cwd(),
     '.npmrc'
   );
