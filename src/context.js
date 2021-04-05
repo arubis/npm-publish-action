@@ -60,10 +60,32 @@ module.exports = function getContext({dir = '.'} = {}) {
 
   let version
   let status
+  let branch
+  let sha
   let tag = releaseTag
 
-  const {sha, branch} = meta.git
+  const pull_request_head = meta.event.data['pull_request']['head']['ref']
+  if (!!pull_request_head) {
+    sha = meta.git.sha
+    branch = pull_request_head
+    console.log("defined branch:",branch)
+  } else {
+    sha = meta.git.sha
+    branch = meta.git.branch
+    console.log("no pullrequest, defined branch:",branch)
+  }
   const repo = meta.repo.toString()
+
+  if(__DEBUG__) {
+    console.log("***************** stringify meta.event.data.pull_request.head.ref");
+    console.log(JSON.stringify(meta.event.data.pull_request.head.ref, null, 2));
+
+    console.log("***************** stringify meta.git");
+    console.log(JSON.stringify(meta.git, null, 2));
+
+    console.log("***************** stringify meta");
+    console.log(JSON.stringify(meta, null, 2));
+  }
 
   if (branch === releaseBranch) {
     version = packageJson.version
