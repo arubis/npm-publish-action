@@ -48,10 +48,14 @@ module.exports = function getContext({dir = '.'} = {}) {
   }
   
   // overwrite NPM config for registry and token
-  const configFilePath = path.join(process.cwd(), dir, ".npmrc");
-  let configFile = fs.readFileSync(configFilePath, "utf-8");
-  if (!configFile) { throw new Error(`Unable to read .npmrc at specified location: ${path.join(process.cwd(), dir, '.npmrc')}`); }
-  let newConfig = updateConfig(config, process.env.GITHUB_TOKEN);
+  const configFilePath = path.join(dir, ".npmrc");
+  const npmrcFilePath: string = path.resolve(
+    process.env['RUNNER_TEMP'] || process.cwd(),
+    '.npmrc'
+  );
+  let npmrc = fs.readFileSync(npmrcFilePath, "utf-8");
+  if (!npmrc) { throw new Error(`Unable to read .npmrc at specified location: ${npmrcFilePath)}`); }
+  let newNpmRc = updateConfig(npmrc, process.env.GITHUB_TOKEN);
   fs.writeFileSync(configFilePath, newConfig);
 
   const config = packageJson[CONFIG_KEY] || {}
